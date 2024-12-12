@@ -1,23 +1,23 @@
 <?php
-// Khởi tạo thông báo lỗi ban đầu
+
 $error = "";
 
-// Kiểm tra nếu biểu mẫu được gửi
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Kết nối cơ sở dữ liệu
+   
     $servername = "localhost";
-    $username = "root"; // Tên đăng nhập MySQL của bạn
-    $password = ""; // Mật khẩu MySQL của bạn
-    $dbname = "user_management"; // Tên cơ sở dữ liệu
+    $username = "root"; 
+    $password = ""; 
+    $dbname = "user_management"; 
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    // Kiểm tra kết nối
+    
     if ($conn->connect_error) {
         die("Kết nối thất bại: " . $conn->connect_error);
     }
 
-    // Nhận thông tin từ biểu mẫu
+    
     $login_id = $_POST['username'];
     $password = $_POST['password'];
 
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: https://localhost/project2/HOME.php");
         exit();
     } else {
-        // Đăng nhập thất bại, thiết lập thông báo lỗi
+        
         $error = "Tên đăng nhập hoặc mật khẩu không chính xác!";
     }
 
@@ -130,15 +130,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
     <script>
         function validateForm(event) {
-            // Ngăn chặn gửi biểu mẫu ban đầu
+            
             event.preventDefault();
 
-            // Lấy giá trị đầu vào
+            
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorMessage = document.getElementById('error-message');
 
-            // Kiểm tra độ dài tên người dùng và mật khẩu
+            
             if (username === "") {
                 errorMessage.textContent = "Vui lòng nhập tên người dùng.";
                 return false;
@@ -156,7 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return false;
             }
 
-            // Nếu hợp lệ, gửi biểu mẫu
+            // Nếu hợp lệ gửi 
             errorMessage.textContent = "";
             event.target.submit();
         }
