@@ -1,0 +1,4 @@
+<!-- database.php -->
+<?php
+//Kết nối giữa database.sql với máy search
+?>
