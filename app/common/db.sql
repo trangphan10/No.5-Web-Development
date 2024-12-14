@@ -20,7 +20,7 @@ CREATE TABLE users (
     avatar VARCHAR(250),                             
     description TEXT,                                
     updated DATETIME ON UPDATE CURRENT_TIMESTAMP, 
-    created DATETIME       
+    created DATETIME DEFAULT CURRENT_TIMESTAMP        
 );
 
 CREATE TABLE events (
