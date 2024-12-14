@@ -44,6 +44,7 @@ CREATE TABLE event_timelines (
     PoC VARCHAR(250),                                
     updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
     created DATETIME DEFAULT CURRENT_TIMESTAMP       
+    );
 
 CREATE TABLE event_comments (
     id INT(10) AUTO_INCREMENT PRIMARY KEY,          
