@@ -1,5 +1,5 @@
-CREATE DATABASE events;
-USE events;
+CREATE DATABASE no5;
+USE no5;
 
 CREATE TABLE admins (
     id INT(10) AUTO_INCREMENT PRIMARY KEY,           
