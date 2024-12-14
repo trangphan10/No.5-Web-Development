@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Schedule</title>
+    <link rel="stylesheet" href="./add_event.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+
+    <h1>Sự kiện chào đón sinh viên K60</h1>
+
+    <!-- List lịch trình sự kiện -->
+    <h2>Lịch trình</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Thời gian</th>
+                <th>Nội dung</th>
+                <th>Sửa</th>
+            </tr>
+        </thead>
+        <tbody id="activity-list">
+            <?php include 'fetch_activities.php'; ?>
+        </tbody>
+    </table>
+
+    <!-- Form thêm sự kiện -->
+    <div class="form-section">
+        <h2>Thêm mới lịch trình</h2>
+        <form id="activity-form" method="post" action="add_activity.php">
+            <label>Thời gian:</label>
+            <input type="text" id="start-time" name="start_time" placeholder="Bắt đầu"> - <input type="text" id="end-time" name="end_time" placeholder="Kết thúc">
+
+            <label>Tên lịch trình:</label>
+            <input type="text" id="activity-name" name="name" placeholder="Tên lịch trình">
+
+            <label>Nội dung:</label>
+            <textarea id="activity-details" name="details" placeholder="Nội dung"></textarea>
+
+            <label>Người thêm lịch trình:</label>
+            <input type="text" id="activity-person" name="person" placeholder="Người thêm lịch trình">
+            
+            <br>
+            <button type="submit" id="add-activity">Thêm mới</button>
+        </form>
+    </div>
+
+    <script>
+        $(function() {
+            $("#start-time, #end-time").timepicker({
+                timeFormat: "HH:mm",
+                interval: 30,
+                dynamic: false,
+                dropdown: true,
+                scrollbar: true
+            });
+        });
+    </script>
+
+</body>
+</html>
