@@ -4,7 +4,7 @@ $error = "";
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   
+    
     $servername = "localhost";
     $username = "root"; 
     $password = ""; 
@@ -12,16 +12,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    
+   
     if ($conn->connect_error) {
         die("Kết nối thất bại: " . $conn->connect_error);
     }
 
-    
+  
     $login_id = $_POST['username'];
     $password = $_POST['password'];
 
-    // Truy vấn kiểm tra thông tin đăng nhập
+    
     $sql = "SELECT * FROM users WHERE login_id = ? AND password = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $login_id, $password);
@@ -31,20 +31,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         session_start();
 
-        // Lấy thông tin người dùng
+        
         $user = $result->fetch_assoc();
 
         $_SESSION['login_id'] = $user['login_id'];
 
-        // Chuyển hướng tới trang HOME
-        header("Location: https://localhost/project2/HOME.php");
+        
+        header("Location: https://localhost/project_main/HOME.php");
         exit();
     } else {
         
         $error = "Tên đăng nhập hoặc mật khẩu không chính xác!";
     }
 
-    // Đóng kết nối
+    
     $stmt->close();
     $conn->close();
 }
@@ -156,7 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return false;
             }
 
-            // Nếu hợp lệ gửi 
+            
             errorMessage.textContent = "";
             event.target.submit();
         }
