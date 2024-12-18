@@ -4,24 +4,24 @@ $error = "";
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+
     $servername = "localhost";
-    $username = "root"; 
-    $password = ""; 
-    $dbname = "user_management"; 
+    $username = "root";
+    $password = "";
+    $dbname = "user_management";
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-   
+
     if ($conn->connect_error) {
         die("Kết nối thất bại: " . $conn->connect_error);
     }
 
-  
+
     $login_id = $_POST['username'];
     $password = $_POST['password'];
 
-    
+
     $sql = "SELECT * FROM users WHERE login_id = ? AND password = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $login_id, $password);
@@ -31,20 +31,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         session_start();
 
-        
+
         $user = $result->fetch_assoc();
 
         $_SESSION['login_id'] = $user['login_id'];
 
-        
+
         header("Location: https://localhost/project_main/HOME.php");
         exit();
     } else {
-        
+
         $error = "Tên đăng nhập hoặc mật khẩu không chính xác!";
     }
 
-    
+
     $stmt->close();
     $conn->close();
 }
@@ -130,15 +130,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
     <script>
         function validateForm(event) {
-            
+
             event.preventDefault();
 
-            
+
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorMessage = document.getElementById('error-message');
 
-            
+
             if (username === "") {
                 errorMessage.textContent = "Vui lòng nhập tên người dùng.";
                 return false;
@@ -156,27 +156,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return false;
             }
 
-            
+
             errorMessage.textContent = "";
             event.target.submit();
         }
     </script>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form onsubmit="validateForm(event)" method="POST">
-            <label for="username">Người dùng:</label>
-            <input type="text" id="username" name="username" >
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" >
-            <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
-            <div id="error-message" class="error-message"><?php echo htmlspecialchars($error); ?></div>
-            <button type="submit">Đăng nhập</button>
-        </form>
-        <div class="forgot-password">
-            <a href="/forgot-password"><i>Quên password</i></a>
-        </div>
+<div class="login-container">
+    <h2>Login</h2>
+    <form onsubmit="validateForm(event)" method="POST">
+        <label for="username">Người dùng:</label>
+        <input type="text" id="username" name="username" >
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" >
+        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+        <div id="error-message" class="error-message"><?php echo htmlspecialchars($error); ?></div>
+        <button type="submit">Đăng nhập</button>
+    </form>
+    <div class="forgot-password">
+        <a href="REQUEST.php"><i>Quên password</i></a>
     </div>
+</div>
 </body>
 </html>
