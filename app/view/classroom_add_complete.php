@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Hoàn thành</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoàn Thành</title>
 </head>
 <body>
-    <h1>Đăng ký thành công!</h1>
-    <p>Bạn đã đăng ký thành viên thành công.</p>
-    <a href="classroom_add_input.php">Quay lại trang nhập liệu</a>
+    <h2>Hoàn Thành</h2>
+    <p>Bạn đã thêm thành viên thành công!</p>
+    <a href="/login.php?action=register">Quay lại trang chủ</a>
 </body>
 </html>

@@ -1,27 +1,30 @@
-<?php
-session_start();
-$userData = $_SESSION['user_data'] ?? null;
-if (!$userData) {
-    header('Location: classroom_add_input.php');
-    exit();
-}
-?>
-
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Xác nhận thông tin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Thông Tin</title>
 </head>
 <body>
-    <h1>Xác nhận thông tin</h1>
-    <p>Họ và tên: <?= htmlspecialchars($userData['name']) ?></p>
-    <p>Loại người dùng: <?= htmlspecialchars($userData['category']) ?></p>
-    <p>Mã người dùng: <?= htmlspecialchars($userData['id']) ?></p>
-    <p>Mô tả: <?= htmlspecialchars($userData['description']) ?></p>
-    <p><img src="<?= $userData['avatar'] ?>" alt="Avatar" width="100"></p>
-    <form action="../controller/user_confirm.php" method="post">
-        <button type="submit">Đăng ký</button>
-        <a href="classroom_add_input.php">Quay lại</a>
+    <h2>Xác Nhận Thông Tin</h2>
+    <form method="POST" action="/classroom.php?action=complete">
+        <label for="fullname">Họ và Tên</label>
+        <input type="text" id="fullname" name="fullname" value="<?= htmlspecialchars($fullname) ?>" readonly/><br/>
+
+        <label for="id">ID</label>
+        <input type="text" id="id" name="id" value="<?= htmlspecialchars($id) ?>" readonly/><br/>
+
+        <label>Phân loại</label>
+        <input type="text" value="<?= htmlspecialchars($category) ?>" readonly/><br/>
+
+        <label for="avatar">Avatar</label>
+        <img src="<?= $avatar ?>" alt="Avatar" style="width:100px;height:100px;"><br/>
+
+        <label for="description">Mô tả thêm</label>
+        <textarea id="description" name="description" readonly><?= htmlspecialchars($description) ?></textarea><br/>
+
+        <button type="button" onclick="window.location.href='/classroom.php?action=register'">Sửa</button>
+        <button type="submit">Xác Nhận</button>
     </form>
 </body>
 </html>
