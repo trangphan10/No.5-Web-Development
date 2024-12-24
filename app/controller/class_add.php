@@ -3,7 +3,7 @@ require_once 'models/classroom.php';
 
 class RegisterController {
     public function showForm() {
-        include 'views/classroom_add_input.php';
+        include 'view/classroom_add_input.php';
     }
 }
 class ConfirmController {
@@ -18,7 +18,7 @@ class ConfirmController {
         $avatarPath = 'uploads/' . $_FILES['avatar']['name'];
         move_uploaded_file($avatar, $avatarPath);
 
-        include 'views/classroom_add_confirm.php';
+        include 'view/classroom_add_confirm.php';
     }
 }
 class CompleteController {
@@ -27,7 +27,7 @@ class CompleteController {
         $result = $user->insertUser($_POST['fullname'], $_POST['id'], $_POST['category'], $_POST['description'], $_POST['avatar']);
 
         if ($result) {
-            include 'views/complete.php';
+            include 'view/complete.php';
         } else {
             echo "Có lỗi xảy ra khi lưu dữ liệu!";
         }
