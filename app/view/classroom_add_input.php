@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Ký</title>
+    <link rel="stylesheet" href="./app/web/index.css">
+    <script src="./app/web/index.js"></script>
 </head>
 <body>
     <h2>Đăng Ký Thông Tin</h2>
@@ -25,7 +27,7 @@
         <label for="description">Mô tả thêm</label>
         <textarea id="description" name="description"></textarea><br/>
 
-        <button type="submit">Xác Nhận</button>
+        <button type="submit" class="submit-btn" onclick="validateInfo(event)">Xác Nhận</button>
     </form>
 </body>
 </html>

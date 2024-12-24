@@ -24,7 +24,7 @@
         <textarea id="description" name="description" readonly><?= htmlspecialchars($description) ?></textarea><br/>
 
         <button type="button" onclick="window.location.href='/classroom.php?action=register'">Sửa</button>
-        <button type="submit">Xác Nhận</button>
+        <button type="submit" class="confirm-btn" onclick="confirmForm()">Xác Nhận</button>
     </form>
 </body>
 </html>
