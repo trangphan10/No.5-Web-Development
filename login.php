@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../project_main - Copy/app/common/db.php';
+require_once __DIR__ . '/../project_main/app/common/db.php';
 
 $error = "";
 
