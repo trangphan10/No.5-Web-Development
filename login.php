@@ -1,52 +1,41 @@
 <?php
+require_once __DIR__ . '/../project_main - Copy/app/common/db.php';
 
 $error = "";
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    $servername = "localhost";
-    $username = "root"; 
-    $password = ""; 
-    $dbname = "user_management"; 
+    try {
+        $database = new Database();
+        $conn = $database->getConnection();
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
+        $login_id = $_POST['username'];
+        $password = $_POST['password'];
 
-   
-    if ($conn->connect_error) {
-        die("Kết nối thất bại: " . $conn->connect_error);
+        $sql = "SELECT * FROM admins WHERE login_id = ? AND password = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $login_id, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            session_start();
+            $user = $result->fetch_assoc();
+            $_SESSION['login_id'] = $user['login_id'];
+
+            header("Location: HOME.php");
+            exit();
+        } else {
+            $error = "Tên đăng nhập hoặc mật khẩu không chính xác!";
+        }
+
+        $stmt->close();
+    } catch (Exception $e) {
+        $error = "Đã xảy ra lỗi: " . $e->getMessage();
+    } finally {
+        if (isset($conn)) {
+            $conn->close();
+        }
     }
-
-  
-    $login_id = $_POST['username'];
-    $password = $_POST['password'];
-
-    
-    $sql = "SELECT * FROM users WHERE login_id = ? AND password = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $login_id, $password);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        session_start();
-
-        
-        $user = $result->fetch_assoc();
-
-        $_SESSION['login_id'] = $user['login_id'];
-
-        
-        header("Location: https://localhost/project_main/HOME.php");
-        exit();
-    } else {
-        
-        $error = "Tên đăng nhập hoặc mật khẩu không chính xác!";
-    }
-
-    
-    $stmt->close();
-    $conn->close();
 }
 ?>
 
@@ -130,15 +119,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
     <script>
         function validateForm(event) {
-            
             event.preventDefault();
 
-            
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorMessage = document.getElementById('error-message');
 
-            
             if (username === "") {
                 errorMessage.textContent = "Vui lòng nhập tên người dùng.";
                 return false;
@@ -156,10 +142,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return false;
             }
 
-            
             errorMessage.textContent = "";
             event.target.submit();
         }
+        
     </script>
 </head>
 <body>
@@ -180,4 +166,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
-
