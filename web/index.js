@@ -47,4 +47,27 @@ function validateInfo(event) {
     if (hasError) {
         return;
     }
+
+    // Nếu không có lỗi, tiếp tục gửi dữ liệu
+    const formData = new FormData();
+    formData.append('fullname', fullname);
+    formData.append('id', id);
+    formData.append('description', description);
+    formData.append('avatar', checkAvatar.files[0]);
+    formData.append('category', selectedRadio.value);
+
+    fetch('/No.5-Web-Development/app/view/classroom_add_confirm.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.text();
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(data => {
+        document.body.innerHTML = data;
+    })
+    .catch(error => console.error('Error:', error));
 }

@@ -1,9 +1,9 @@
 <?php
-require_once 'models/classroom.php';
+require_once 'C:/xampp/htdocs/No.5-Web-Development/app/model/classroom.php';
 
 class RegisterController {
     public function showForm() {
-        include 'view/classroom_add_input.php';
+        include 'C:/xampp/htdocs/No.5-Web-Development/app/view/classroom_add_input.php';
     }
 }
 class ConfirmController {
@@ -15,10 +15,10 @@ class ConfirmController {
         $avatar = $_FILES['avatar']['tmp_name'];
 
         // Lưu file ảnh vào thư mục uploads
-        $avatarPath = 'uploads/' . $_FILES['avatar']['name'];
+        $avatarPath = 'C:/xampp/htdocs/No.5-Web-Development/web/avatar/' . $_FILES['avatar']['name'];
         move_uploaded_file($avatar, $avatarPath);
 
-        include 'view/classroom_add_confirm.php';
+        include 'C:/xampp/htdocs/No.5-Web-Development/app/view/classroom_add_confirm.php';
     }
 }
 class CompleteController {
@@ -27,7 +27,7 @@ class CompleteController {
         $result = $user->insertUser($_POST['fullname'], $_POST['id'], $_POST['category'], $_POST['description'], $_POST['avatar']);
 
         if ($result) {
-            include 'view/complete.php';
+            include 'C:/xampp/htdocs/No.5-Web-Development/app/view/classroom_add_complete.php';
         } else {
             echo "Có lỗi xảy ra khi lưu dữ liệu!";
         }

@@ -21,7 +21,7 @@ body {
 
 /* Nhóm của mỗi trường form */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 /* Kiểu chữ cho label */
@@ -74,7 +74,15 @@ button.submit-btn {
 }
 
 button.submit-btn:hover {
-    background-color: #2E5077;
+    background-color: #1F3E5A;
+}
+
+/* Kiểu cho thông báo lỗi */
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
 }
 
 /* Kiểu responsive */
@@ -86,10 +94,4 @@ button.submit-btn:hover {
     button.submit-btn {
         font-size: 14px;
     }
-}
-.error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-    display: block;
 }

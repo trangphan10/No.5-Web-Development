@@ -1,6 +1,5 @@
 <?php
-require_once 'controllers/class.php';
-
+require_once('C:/xampp/htdocs/No.5-Web-Development/app/controller/class_add.php');
 $action = isset($_GET['action']) ? $_GET['action'] : 'register';
 
 switch ($action) {
