@@ -75,7 +75,7 @@ $username = $_SESSION['login_id'];
                     <a href="add_classroom.php">Thêm mới</a>
                 </td>
                 <td>
-                    <a href="/../project_main - Copy/app/view/user_search.php">Tìm kiếm</a><br>
+                    <a href="/../project_main/app/view/user_search/user_search.php">Tìm kiếm</a><br>
                     <a href="add_user.php">Thêm mới</a>
                 </td>
                 <td>
