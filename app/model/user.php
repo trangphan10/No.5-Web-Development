@@ -1,23 +1,48 @@
-function searchUsers($type, $keyword) {
-    global $conn;
+<?php
+require_once __DIR__ . '/../common/db.php';
 
-    $sql = "SELECT * FROM users WHERE 1=1";
-    $params = [];
 
-    // Điều kiện phân loại
-    if ($type != '') {
-        $sql .= " AND type = :type";
-        $params[':type'] = $type;
+class User {
+    private $conn;
+
+    public function __construct() {
+        $database = new Database();
+        $this->conn = $database->getConnection();
     }
 
-    // Điều kiện từ khóa
-    if ($keyword != '') {
-        $sql .= " AND (name LIKE :keyword OR description LIKE :keyword)";
-        $params[':keyword'] = '%' . $keyword . '%';
+    public function search($type, $keyword) {
+        $query = "SELECT * FROM users WHERE (? = '' OR type = ?) AND (name LIKE ? OR description LIKE ?)";
+        $stmt = $this->conn->prepare($query);
+
+        if (!$stmt) {
+            throw new Exception("Chuẩn bị truy vấn thất bại: " . $this->conn->error);
+        }
+
+        // Thay thế tham số bằng giá trị thực
+        $keyword = "%$keyword%";
+        $stmt->bind_param("ssss", $type, $type, $keyword, $keyword);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $users = $result->fetch_all(MYSQLI_ASSOC);
+
+        $stmt->close();
+        return $users;
     }
 
-    $stmt = $conn->prepare($sql);
-    $stmt->execute($params);
+    public function delete($id) {
+        $query = "DELETE FROM users WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!$stmt) {
+            throw new Exception("Chuẩn bị truy vấn thất bại: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("i", $id);
+        $success = $stmt->execute();
+
+        $stmt->close();
+        return $success;
+    }
 }
+?>
