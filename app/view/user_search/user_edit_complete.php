@@ -1,9 +1,12 @@
 <?php
-require_once '../common/db.php';
+require_once '../../common/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     die("Invalid access.");
 }
+
+$database = new Database();
+$conn = $database->getConnection();
 
 $id = intval($_POST['id']);
 $name = $conn->real_escape_string($_POST['name']);
@@ -69,7 +72,7 @@ $stmt->bind_param("issssi", $type, $name, $unique_id, $avatar, $description, $id
         <?php
         if ($stmt->execute()) {
             echo "<p class='message success'>Bạn đã chỉnh sửa thành công người dùng.</p>";
-            echo '<a href="user_list.php">Trở về trang chủ</a>';
+            echo '<a href="../../../HOME.php">Trở về trang chủ</a>';
         } else {
             echo "<p class='message error'>Error updating user: " . $conn->error . "</p>";
         }

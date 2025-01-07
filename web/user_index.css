@@ -1,0 +1,97 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f9;
+}
+
+/* Container của form */
+.form-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Nhóm của mỗi trường form */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Kiểu chữ cho label */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333333;
+}
+
+/* Kiểu cho input và textarea */
+input[type="text"],
+input[type="file"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* Kiểu riêng cho textarea */
+textarea {
+    resize: none;
+    height: 100px;
+}
+
+/* Nhóm các nút radio */
+.radio-group {
+    display: flex;
+    gap: 10px;
+}
+
+.radio-group label {
+    font-weight: normal;
+}
+
+/* Kiểu cho nút submit */
+button.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #2E5077;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.submit-btn:hover {
+    background-color: #1F3E5A;
+}
+
+/* Kiểu cho thông báo lỗi */
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Kiểu responsive */
+@media (max-width: 480px) {
+    .form-container {
+        padding: 15px;
+    }
+
+    button.submit-btn {
+        font-size: 14px;
+    }
+}

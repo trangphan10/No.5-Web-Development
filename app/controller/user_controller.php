@@ -1,6 +1,7 @@
 <?php
-require_once '../common/db.php';
-require_once '../model/user.php';
+require_once __DIR__ . '/../common/db.php';
+require_once __DIR__ . '/../model/user.php';
+require_once  $_SERVER['DOCUMENT_ROOT'] . '/project_main/app/model/user.php';
 
 class UserController {
     private $userModel;
@@ -28,11 +29,15 @@ class UserController {
             echo "Lỗi: " . $e->getMessage();
         }
     }
+    public function complete() {
+        $user = new User();
+        $result = $user->insertUser($_POST['fullname'], $_POST['id'], $_POST['category'], $_POST['description'], $_POST['avatarPath']);
 
-    public function edit($id) {
-        // Điều hướng tới file user_edit.php với tham số ID
-        header("Location: ../controller/user_edit.php?id=" . $id);
-        exit();
+        if ($result) {
+            include $_SERVER['DOCUMENT_ROOT'] . '/project_main/app/view/user_add/user_add_complete.php';
+        } else {
+            echo "Có lỗi xảy ra khi lưu dữ liệu!";
+        }
     }
 }
 ?>

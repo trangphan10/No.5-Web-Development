@@ -1,7 +1,20 @@
+<?php 
+require_once '../../controller/user_controller.php';
+
+$userController = new UserController();
+$type = $_GET['type'] ?? '';
+$keyword = $_GET['keyword'] ?? '';
+$users = [];
+
+if (!empty($type) || !empty($keyword)) {
+    $users = $userController->search($type, $keyword);
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Search Users</title>
+    <title>Tìm kiếm người dùng</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,11 +28,20 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
         }
 
         label, select, input {
-            margin: 5px;
+            margin: 15px;
+        }
+
+        select, input[type="text"] {
+            border: 2px solid black; /* Viền đen */
+            background-color: white; /* Nền trắng */
+            padding: 10px; /* Khoảng cách bên trong */
+            border-radius: 5px; /* Góc bo tròn */
+            width: 220px; /* Độ rộng */
+            font-size: 14px; /* Kích thước chữ */
         }
 
         button {
@@ -30,6 +52,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
         }
 
         button:hover {
@@ -56,11 +79,12 @@
         }
 
         .action-buttons a {
-            margin: 0 5px;
+            margin: 0 10px;
             padding: 5px 10px;
             text-decoration: none;
             color: white;
             border-radius: 3px;
+            font-size: 13px;
         }
 
         .action-buttons a.delete {
@@ -74,29 +98,34 @@
         .action-buttons a:hover {
             opacity: 0.8;
         }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
     <h1>Tìm kiếm người dùng</h1>
-    <form method="GET" action="user_search_result.php">
+    <form method="GET" action="">
         <div>
             <label for="type">Phân loại:</label>
             <select name="type" id="type">
                 <option value="">--Chọn--</option>
-                <option value="1">Sinh viên</option>
-                <option value="2">Giáo viên</option>
-                <option value="3">Sinh viên cũ</option>
+                <option value="1" <?= $type == '1' ? 'selected' : '' ?>>Sinh viên</option>
+                <option value="2" <?= $type == '2' ? 'selected' : '' ?>>Giáo viên</option>
+                <option value="3" <?= $type == '3' ? 'selected' : '' ?>>Cựu sinh viên</option>
             </select>
         </div>
         <div>
             <label for="keyword">Từ khóa:</label>
-            <input type="text" id="keyword" name="keyword" placeholder="Nhập tên hoặc mô tả">
+            <input type="text" id="keyword" name="keyword" value="<?= htmlspecialchars($keyword) ?>" placeholder="Nhập tên hoặc mô tả">
         </div>
         <button type="submit">Tìm kiếm</button>
     </form>
 
-    <?php if (!empty($_GET['type']) || !empty($_GET['keyword'])): ?>
-        <p style="text-align: center;">Số thành viên tìm thấy: <strong>XXX</strong></p>
+    <?php if (!empty($type) || !empty($keyword)): ?>
+        <p>Số thành viên tìm thấy: <strong><?= count($users) ?></strong></p>
         <table>
             <thead>
                 <tr>
@@ -108,30 +137,24 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Example rows (Replace with PHP loop for real data) -->
-                <tr>
-                    <td>1</td>
-                    <td>Nguyễn Văn A</td>
-                    <td>Giáo viên</td>
-                    <td>Mô tả chi tiết về thành viên</td>
-                    <td class="action-buttons">
-                        <a href="user_delete.php?id=1" class="delete" onclick="return confirm('Bạn chắc chắn muốn xóa thành viên này?')">Xóa</a>
-                        <a href="user_edit.php?id=1" class="edit">Sửa</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Trần Thị B</td>
-                    <td>Sinh viên</td>
-                    <td>Mô tả chi tiết về thành viên</td>
-                    <td class="action-buttons">
-                        <a href="user_delete.php?id=2" class="delete" onclick="return confirm('Bạn chắc chắn muốn xóa thành viên này?')">Xóa</a>
-                        <a href="user_edit.php?id=2" class="edit">Sửa</a>
-                    </td>
-                </tr>
-                <!-- Add more rows dynamically -->
+                <?php foreach ($users as $index => $user): ?>
+                    <tr>
+                        <td><?= intval($index) + 1 ?></td>
+                        <td><?= htmlspecialchars($user['name']) ?></td>
+                        <td>
+                            <?= $user['type'] == 1 ? 'Sinh viên' : ($user['type'] == 2 ? 'Giáo viên' : 'Cựu sinh viên') ?>
+                        </td>
+                        <td><?= htmlspecialchars($user['description']) ?></td>
+                        <td class="action-buttons">
+                            <a href="user_edit_input.php?id=<?= htmlspecialchars($user['id']) ?>" class="edit">Sửa</a>
+                            <a href="user_delete.php?id=<?= htmlspecialchars($user['id']) ?>" class="delete" onclick="return confirm('Bạn chắc chắn muốn xóa <?= htmlspecialchars($user['name']) ?>?')">Xóa</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
+    <?php else: ?>
+        <p>Không tìm thấy thành viên nào.</p>
     <?php endif; ?>
 </body>
 </html>

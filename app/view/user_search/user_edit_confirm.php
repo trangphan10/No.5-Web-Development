@@ -9,7 +9,7 @@ $type = htmlspecialchars($_POST['type']);
 $unique_id = htmlspecialchars($_POST['unique_id']);
 $description = htmlspecialchars($_POST['description']);
 
-$avatar = $_FILES['avatar']['name'] ? $_FILES['avatar']['name'] : 'placeholder.png';
+$avatar = isset($_GET['avatar']) ? $_GET['avatar'] : 'placeholder.png';
 ?>
 
 <!DOCTYPE html>
@@ -69,7 +69,7 @@ $avatar = $_FILES['avatar']['name'] ? $_FILES['avatar']['name'] : 'placeholder.p
         </div>
         <div class="form-group">
             <label>Phân loại:</label>
-            <p><?php echo $type; ?></p>
+            <p><?php echo $type == 1 ? 'Sinh viên' : ($type == 2 ? 'Giáo viên' : 'Cựu sinh viên') ?>
         </div>
         <div class="form-group">
             <label>ID:</label>
@@ -77,7 +77,7 @@ $avatar = $_FILES['avatar']['name'] ? $_FILES['avatar']['name'] : 'placeholder.p
         </div>
         <div class="form-group">
             <label>Avatar:</label>
-            <img src="../uploads/<?php echo $avatar; ?>" alt="Avatar">
+            <img src="../temp/<?php echo htmlspecialchars($avatar); ?>" alt="Avatar" id="avatarPreview">>
         </div>
         <div class="form-group">
             <label>Mô tả thêm:</label>
@@ -85,7 +85,7 @@ $avatar = $_FILES['avatar']['name'] ? $_FILES['avatar']['name'] : 'placeholder.p
         </div>
 
         <div class="form-actions">
-            <form action="user_edit_input.php" method="post">
+            <form action="user_edit_input.php?id=<?php echo $id; ?>" method="post">
                 <input type="hidden" name="id" value="<?php echo $id; ?>">
                 <input type="hidden" name="name" value="<?php echo $name; ?>">
                 <input type="hidden" name="type" value="<?php echo $type; ?>">

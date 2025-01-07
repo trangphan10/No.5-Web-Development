@@ -4,6 +4,11 @@ session_start();
 // Lấy thông tin đăng nhập từ session
 date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đặt múi giờ Việt Nam
 
+if (!isset($_SESSION['login_id'])) {
+   // header("Location: login.php");
+    //exit();
+}
+
 $username = $_SESSION['login_id'];
 
 ?>
@@ -75,12 +80,12 @@ $username = $_SESSION['login_id'];
                     <a href="add_classroom.php">Thêm mới</a>
                 </td>
                 <td>
-                    <a href="/../project_main/app/view/user_search/user_search.php">Tìm kiếm</a><br>
-                    <a href="add_user.php">Thêm mới</a>
+                    <a href="app/view/user_search/user_search.php">Tìm kiếm</a><br>
+                    <a href="app/view/user_add/user_add_input.php">Thêm mới</a>
                 </td>
                 <td>
-                    <a href="search_event.php">Tìm kiếm</a><br>
-                    <a href="add_event.php">Thêm mới</a>
+                    <a href="app/view/event_search/search_events.php">Tìm kiếm</a><br>
+                    <a href="app/view/event_add/input.php">Thêm mới</a>
                 </td>
                 <td>
                     <a href="search_organizer.php">Tìm kiếm</a><br>

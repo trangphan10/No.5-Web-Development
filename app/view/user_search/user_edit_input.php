@@ -1,47 +1,44 @@
 <?php
-require_once __DIR__ . '/../common/db.php';
+require_once __DIR__ . '/../../common/db.php';
 
-if (!isset($_GET['id'])) {
-    die("User ID is required.");
-}
+$database = new Database();
+$conn = $database->getConnection();
 
-$id = intval($_GET['id']);
-
-$sql = "SELECT * FROM users WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-    die("User not found.");
-}
-
-$user = $result->fetch_assoc();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $type = intval($_POST['type']);
-    $name = $conn->real_escape_string($_POST['name']);
-    $unique_id = $conn->real_escape_string($_POST['unique_id']);
-    $avatar = $conn->real_escape_string($_POST['avatar']);
-    $description = $conn->real_escape_string($_POST['description']);
-
-    $update_sql = "UPDATE users SET 
-        type = ?, 
-        name = ?, 
-        unique_id = ?, 
-        avatar = ?, 
-        description = ? 
-        WHERE id = ?";
-    $update_stmt = $conn->prepare($update_sql);
-    $update_stmt->bind_param("issssi", $type, $name, $unique_id, $avatar, $description, $id);
-
-    if ($update_stmt->execute()) {
-        echo "<p style='color: green;'>User updated successfully.</p>";
-    } else {
-        echo "<p style='color: red;'>Error updating user: " . $conn->error . "</p>";
+    $user = [
+        'id' => intval($_POST['id']),
+        'name' => htmlspecialchars($_POST['name']),
+        'type' => htmlspecialchars($_POST['type']),
+        'unique_id' => htmlspecialchars($_POST['unique_id']),
+        'description' => htmlspecialchars($_POST['description']),
+        'avatar' => htmlspecialchars($_POST['avatar']),
+    ];
+} else {
+    if (!isset($_GET['id'])) {
+        die("User ID is required.");
     }
+
+    $id = intval($_GET['id']);
+
+    $sql = "SELECT * FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        die("User not found.");
+    }
+
+    $user = $result->fetch_assoc();
+    $name = $user['name'];
+    $type = $user['type'];
+    $unique_id = $user['unique_id'];
+    $description = $user['description'];
+    $avatar = $user['avatar'];
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -84,6 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         .form-group .avatar img {
             width: 100px;
             height: 100px;
+            object-fit: cover;
             margin-right: 10px;
         }
         .form-group .avatar input[type="file"] {
@@ -116,9 +114,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="form-group">
                 <label>Phân loại</label>
                 <input type="radio" id="teacher" name="type" value="1" <?php echo ($user['type'] == '1') ? 'checked' : ''; ?> required>
-                <label for="teacher">Giáo viên</label>
+                <label for="teacher">Sinh viên</label>
                 <input type="radio" id="student" name="type" value="2" <?php echo ($user['type'] == '2') ? 'checked' : ''; ?>>
-                <label for="student">Sinh viên</label>
+                <label for="student">Giáo viên</label>
                 <input type="radio" id="alumni" name="type" value="3" <?php echo ($user['type'] == '3') ? 'checked' : ''; ?>>
                 <label for="alumni">Cựu sinh viên</label>
             </div>
@@ -128,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
             <div class="form-group avatar">
                 <label for="avatar">Avatar</label>
-                <img src="placeholder.png" alt="Avatar" id="avatarPreview">
+                <img src="../uploads/<?php echo $user['avatar']; ?>" alt="Avatar" id="avatarPreview">
                 <input type="file" id="avatar" name="avatar" accept="image/*" onchange="previewAvatar(event)">
             </div>
             <div class="form-group">
@@ -147,6 +145,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             reader.onload = function(){
                 const output = document.getElementById('avatarPreview');
                 output.src = reader.result;
+                output.style.width = '100px'; // Set the desired width
+                output.style.height = '100px'; // Set the desired height
+                output.style.objectFit = 'cover'; // Ensure the image covers the area without distortion
             };
             reader.readAsDataURL(event.target.files[0]);
         }
