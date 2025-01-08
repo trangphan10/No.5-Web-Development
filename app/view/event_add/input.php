@@ -37,32 +37,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['mo_ta_chi_tiet'] = "Không nhập quá 1000 ký tự";
     }
 
-    if (empty($avatar['name'])) {
+    // Xử lý file avatar
+    $avatarPath = $_SESSION['form_data']['avatar'] ?? ''; // Lấy đường dẫn ảnh từ session nếu có
+    if (empty($avatar['name']) && empty($avatarPath)) {
+        // Nếu không có ảnh mới và cũng không có ảnh cũ trong session
         $errors['avatar'] = "Hãy chọn avatar";
     } else {
-        // Xử lý upload file
-        $targetDir = "uploads/";
-        $targetFile = $targetDir . basename($avatar["name"]);
-        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-
-        // Kiểm tra loại file
-        $allowedTypes = ["jpg", "jpeg", "png", "gif"];
-        if (!in_array($imageFileType, $allowedTypes)) {
-            $errors['avatar'] = "Chỉ chấp nhận file JPG, JPEG, PNG hoặc GIF";
-        } elseif (!move_uploaded_file($avatar["tmp_name"], $targetFile)) {
-            $errors['avatar'] = "Lỗi khi tải file lên";
+        if (!empty($avatar['name'])) {
+            // Xử lý upload file mới
+            $targetDir = "uploads/";
+            $targetFile = $targetDir . basename($avatar["name"]);
+            $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+    
+            // Kiểm tra loại file
+            $allowedTypes = ["jpg", "jpeg", "png", "gif"];
+            if (!in_array($imageFileType, $allowedTypes)) {
+                $errors['avatar'] = "Chỉ chấp nhận file JPG, JPEG, PNG hoặc GIF";
+            } elseif (!move_uploaded_file($avatar["tmp_name"], $targetFile)) {
+                $errors['avatar'] = "Lỗi khi tải file lên";
+            } else {
+                $avatarPath = $targetFile; // Cập nhật đường dẫn file mới
+            }
         }
     }
 
+   
+// Lưu avatar (cũ hoặc mới) vào session
+$_SESSION['form_data']['avatar'] = $avatarPath;
+
+    $_SESSION['form_data'] = [
+        'ten_su_kien' => $_POST['ten_su_kien'],
+        'slogan' => $_POST['slogan'],
+        'leader' => $_POST['leader'],
+        'mo_ta_chi_tiet' => $_POST['mo_ta_chi_tiet'],
+        'avatar' => $avatarPath
+    ];
+    
+    
     // Lưu dữ liệu vào session khi không có lỗi
     if (empty($errors)) {
-        $_SESSION['form_data'] = [
-            'ten_su_kien' => $tenSuKien,
-            'slogan' => $slogan,
-            'leader' => $leader,
-            'mo_ta_chi_tiet' => $moTaChiTiet,
-            'avatar' => $targetFile
-        ];
+        // $_SESSION['form_data'] = [
+        //     'ten_su_kien' => $tenSuKien,
+        //     'slogan' => $slogan,
+        //     'leader' => $leader,
+        //     'mo_ta_chi_tiet' => $moTaChiTiet,
+        //     'avatar' => $targetFile
+        // ];
         header('Location: confirm.php');
         exit();
     }
@@ -134,6 +154,23 @@ $formData = $_SESSION['form_data'] ?? [];
     button:hover {
         background-color: #0056b3;
     }
+
+    a:hover {
+        color: #0056b3;
+    }
+
+    a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
+        margin-left: 100px;
+        font-size: 0.9em;
+    }
     </style>
 </head>
 
@@ -173,10 +210,19 @@ $formData = $_SESSION['form_data'] ?? [];
             <div class="form-group">
                 <label for="avatar">Avatar:</label>
                 <input type="file" id="avatar" name="avatar">
+                <?php if (!empty($formData['avatar'])): ?>
+                <div class="form-group">
+
+                    <img src="<?php echo htmlspecialchars($formData['avatar']); ?>" alt="Avatar"
+                        style="max-width: 200px; height: auto; display: block; margin-top: 10px;">
+                </div>
+                <?php endif; ?>
+
                 <div class="error"><?php echo $errors['avatar'] ?? ''; ?></div>
             </div>
-
             <button type="submit">Xác Nhận</button>
+            <a href="../../../HOME.php">Huỷ</a>
+
         </form>
     </div>
 </body>

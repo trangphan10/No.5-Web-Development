@@ -25,7 +25,7 @@ CREATE TABLE users (
 
 CREATE TABLE events (
     id INT(10) AUTO_INCREMENT PRIMARY KEY,         
-    username VARCHAR(250),                         
+    name VARCHAR(250),                         
     slogan VARCHAR(250),                           
     leader VARCHAR(250),                            
     avatar VARCHAR(250),                           

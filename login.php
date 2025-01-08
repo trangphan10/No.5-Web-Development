@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../project_main/app/common/db.php';
+require_once __DIR__ . '/app/common/db.php';
 
 session_start();
 
@@ -7,10 +7,8 @@ $error = "";
 
 // Reset error khi load lại trang
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $error = ""; // Reset lỗi trên server
-    echo "<script>document.addEventListener('DOMContentLoaded', () => { 
-        document.getElementById('error-message').textContent = ''; 
-    });</script>";
+    $error = ""; 
+    reset_captcha();
 }
 
 
@@ -97,39 +95,39 @@ if (!isset($_SESSION['captcha_code'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        $database = new Database();
-        $conn = $database->getConnection();
+        // Kiểm tra CAPTCHA trước
+        $user_captcha = $_POST['captcha'];
+        $stored_captcha = $_SESSION['captcha_code'];
 
-        $login_id = $_POST['username'];
-        $password = $_POST['password'];
+        if ($user_captcha != $stored_captcha) {
+            $error = "CAPTCHA không chính xác. Vui lòng thử lại.";
+            reset_captcha();
+        } else {
+            $database = new Database();
+            $conn = $database->getConnection();
 
-        // Kiểm tra thông tin đăng nhập trước
-        $sql = "SELECT * FROM admins WHERE login_id = ? AND password = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $login_id, $password);
-        $stmt->execute();
-        $result = $stmt->get_result();
+            $login_id = $_POST['username'];
+            $password = $_POST['password'];
 
-        if ($result->num_rows > 0) {
-            // Nếu thông tin đăng nhập đúng, kiểm tra CAPTCHA
-            $user_captcha = $_POST['captcha'];
-            $stored_captcha = $_SESSION['captcha_code'];
+            // Kiểm tra thông tin đăng nhập
+            $sql = "SELECT * FROM admins WHERE login_id = ? AND password = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $login_id, $password);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-            if ($user_captcha != $stored_captcha) {
-                $error = "CAPTCHA không chính xác. Vui lòng thử lại.";
-                reset_captcha();
-            } else {
+            if ($result->num_rows > 0) {
                 $user = $result->fetch_assoc();
                 $_SESSION['login_id'] = $user['login_id'];
                 header("Location: HOME.php");
                 exit();
+            } else {
+                $error = "Thông tin đăng nhập không chính xác.";
+                reset_captcha();
             }
-        } else {
-            $error = "Thông tin đăng nhập không chính xác.";
-            reset_captcha();
-        }
 
-        $stmt->close();
+            $stmt->close();
+        }
     } catch (Exception $e) {
         $error = "Đã xảy ra lỗi: " . $e->getMessage();
     } finally {
@@ -183,10 +181,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
-        }
-        .g-recaptcha {
-            display: flex;
-            justify-content: center;
         }
         .login-container button {
             padding: 8px 60px;

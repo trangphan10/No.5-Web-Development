@@ -1,117 +1,127 @@
 <?php
 session_start();
 $error = "";
+$success = "";
 
+// Kết nối cơ sở dữ liệu
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "no5";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+}
+
+// Xử lý yêu cầu reset mật khẩu
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "no5";
+    $username = $_POST['username'];
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    // Kiểm tra tên người dùng có tồn tại trong bảng admins không
+    $sql = "SELECT id FROM admins WHERE name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($conn->connect_error) {
-        die("Kết nối thất bại: " . $conn->connect_error);
-    }
+    if ($result->num_rows > 0) {
+        // Sinh reset token
+        $reset_token = uniqid("", true);
 
-    $login_id = trim($_POST['username']);
+        // Cập nhật reset_password_token vào DB
+        $update_sql = "UPDATE admins SET reset_password_token = ? WHERE name = ?";
+        $update_stmt = $conn->prepare($update_sql);
+        $update_stmt->bind_param("ss", $reset_token, $username);
 
-    // Kiểm tra dữ liệu nhập
-    if (empty($login_id)) {
-        $error = "Hãy nhập login ID!";
-    } elseif (strlen($login_id) < 4) {
-        $error = "Hãy nhập login ID tối thiểu 4 ký tự!";
-    } else {
-        // Kiểm tra login_id có tồn tại không
-        $check_sql = "SELECT * FROM admins WHERE login_id = ?";
-        $stmt = $conn->prepare($check_sql);
-        $stmt->bind_param("s", $login_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            // Tạo token reset_password
-            $reset_token = microtime(true);
-            $update_sql = "UPDATE admins SET reset_password_token = ? WHERE login_id = ?";
-            $stmt = $conn->prepare($update_sql);
-            $stmt->bind_param("ds", $reset_token, $login_id);
-            $stmt->execute();
-
-            // Chuyển về màn hình login
-            header("Location: login.php");
+        if ($update_stmt->execute()) {
+            // Chuyển hướng đến form đặt lại mật khẩu trong RESET.php
+            $_SESSION['reset_username'] = $username; // Lưu tên người dùng vào session
+            header("Location: RESET.php");
             exit();
         } else {
-            $error = "Login ID không tồn tại trong hệ thống!";
+            $error = "Không thể gửi yêu cầu reset mật khẩu. Vui lòng thử lại!";
         }
-        $stmt->close();
+        $update_stmt->close();
+    } else {
+        $error = "Tên người dùng không tồn tại!";
     }
-    $conn->close();
+
+    $stmt->close();
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password Request</title>
+    <title>Yêu cầu đặt lại mật khẩu</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f3f4f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
             padding: 20px;
-            width: 350px;
-            text-align: center;
         }
-        .container h2 {
-            margin-bottom: 20px;
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .container form {
-            display: flex;
-            flex-direction: column;
-        }
-        .container input {
-            padding: 10px;
+        .form-group {
             margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        .container button {
-            padding: 8px 60px;
-            background-color: #007bff;
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: green;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
             color: white;
+            padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
-        .container button:hover {
-            background-color: #0056b3;
-        }
-        .error-message {
-            color: red;
-            margin-bottom: 10px;
+        button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>Reset Password</h2>
-    <form method="POST">
-        <label for="username">Người dùng:</label>
-        <input type="text" id="username" name="username">
-        <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
-        <button type="submit">Gửi yêu cầu reset password</button>
-    </form>
-</div>
+<h2>Yêu cầu đặt lại mật khẩu</h2>
+<form method="POST">
+    <?php if (!empty($error)) : ?>
+        <div class="error"><?php echo $error; ?></div>
+    <?php endif; ?>
+    <div class="form-group">
+        <label for="username">Tên người dùng:</label>
+        <input type="text" name="username" id="username" required placeholder="Nhập tên người dùng">
+    </div>
+    <button type="submit">Gửi yêu cầu</button>
+</form>
 </body>
 </html>

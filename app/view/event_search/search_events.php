@@ -69,7 +69,7 @@ $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <button onclick="confirmDelete('<?= htmlspecialchars($event['name']) ?>', <?= $event['id'] ?>)">Xóa</button>
                         <a href="edit_event.php?id=<?= $event['id'] ?>"><button>Sửa</button></a>
                         <a href="add_schedule.php?id=<?= $event['id'] ?>"><button>Lịch trình</button></a>
-                        <a href="event_comments.php?id=<?= $event['id'] ?>"><button>Comment</button></a>
+                        <a href="add_comment.php?id=<?= $event['id'] ?>"><button>Comment</button></a>
                     </td>
                 </tr>
             <?php endforeach; ?>

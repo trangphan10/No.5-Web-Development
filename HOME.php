@@ -2,12 +2,8 @@
 
 session_start();
 // Lấy thông tin đăng nhập từ session
-date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đặt múi giờ Việt Nam
+date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 
-if (!isset($_SESSION['login_id'])) {
-   // header("Location: login.php");
-    //exit();
-}
 
 $username = $_SESSION['login_id'];
 
@@ -54,7 +50,7 @@ $username = $_SESSION['login_id'];
             text-decoration: underline;
         }
         .HOME-info {
-            text-align: left; /* Căn văn bản bên trái */
+            text-align: left;
         }
     </style>
 </head>

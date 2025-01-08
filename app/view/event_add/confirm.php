@@ -6,6 +6,10 @@ if (!isset($_SESSION['form_data'])) {
     header('Location: input.php');
     exit();
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit'])) {
+    header('Location: input.php'); // Quay lại input.php
+    exit();
+}
 
 $formData = $_SESSION['form_data'];
 $avatarPath = $formData['avatar'] ?? ''; // Đường dẫn avatar
@@ -19,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {
     }
 
     // Chèn dữ liệu vào bảng events
-    $stmt = $conn->prepare("INSERT INTO events (username, slogan, leader, avatar, description) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO events (name, slogan, leader, avatar, description) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param(
         "sssss",
         $formData['ten_su_kien'],
@@ -154,9 +158,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {
         <form method="post">
             <div class="buttons">
                 <button type="submit" name="confirm" class="btn-confirm">Đăng Ký</button>
-                <button type="button" onclick="window.location='input.php'" class="btn-edit">Sửa Lại</button>
+                <button type="submit" name="edit" class="btn-edit">Sửa Lại</button>
             </div>
         </form>
+
     </div>
 </body>
 
